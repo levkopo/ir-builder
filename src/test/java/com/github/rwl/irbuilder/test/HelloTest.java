@@ -19,7 +19,7 @@ public class HelloTest extends TestCase {
     ir.constant(null, hello, null, false, null);
     FunctionType ft = new FunctionType(IntType.INT_32,
         IntType.INT_8.pointerTo());
-    GlobalVariable puts = ir.functionDecl("puts", ft);
+    GlobalVariable puts = ir.functionDeclaration("puts", ft);
     ir.beginFunction("main", null, null, null);
     ir.call(puts, Lists.<IValue>newArrayList(hello), null);
     ir.endFunction(null);

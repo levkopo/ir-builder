@@ -1,0 +1,93 @@
+plugins {
+    id "java-library"
+    id "maven-publish"
+    id "signing"
+}
+
+group 'com.github.levkoposc'
+archivesBaseName = "ir-builder"
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'com.google.guava' , name: 'guava', version: '30.1-jre'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'com.github.levkoposc'
+            artifactId = project.archivesBaseName
+            version = project.version
+
+            pom {
+                name = 'LLVM IR Builder'
+                description = ''
+                url = 'https://github.com/levkopo/ir-builder'
+                licenses {
+                    license {
+                        name = 'Apache-2.0 License'
+                        url = 'https://github.com/levkopo/ir-builder/blob/master/LICENSE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'levkopo'
+                        name = 'Lev Koporushkin'
+                        email = 'levkopoag@gmail.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/levkopo/ir-builder.git'
+                    developerConnection = 'scm:git:ssh://github.com/levkopo/ir-builder.git'
+                    url = 'https://github.com/levkopo/ir-builder'
+                }
+            }
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url 'https://repo.levkopo.ru/repository/maven/'
+            credentials {
+                username = project.findProperty('levkopoRepoUsername') ?: System.getenv('levkopoRepoUsername')
+                password = project.findProperty('levkopoRepoPassword') ?: System.getenv('levkopoRepoPassword')
+            }
+        }
+
+        maven {
+            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials {
+                username = project.findProperty('sonatypeUsername') ?: System.getenv('sonatypeUsername')
+                password = project.findProperty('sonatypePassword') ?: System.getenv('sonatypePassword')
+            }
+        }
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/levkopo/"+project.archivesBaseName)
+            credentials {
+                username = project.findProperty('githubUsername') ?: System.getenv('githubUsername')
+                password = project.findProperty('githubKey') ?: System.getenv('githubKey')
+            }
+        }
+    }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}

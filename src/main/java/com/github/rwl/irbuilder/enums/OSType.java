@@ -25,13 +25,8 @@ public enum OSType {
   BITRIG ("Bitrig"),
   AIX ("AIX");
 
-  private final String os;
-
-  private OSType(String os) {
+  public final String os;
+  OSType(String os) {
     this.os = os;
-  }
-
-  public String os() {
-    return os;
   }
 }
